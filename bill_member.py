@@ -25,7 +25,7 @@ def get_bill_by_account(account_id, billing_calendar, data):
         return 0, 0
 
     previous, current = get_readings_by_account(billing_calendar, data)
-    consumption = current['cumulative']-previous['cumulative']
+    consumption = current['cumulative'] - previous['cumulative']
     consumption_cost = (consumption * tariff.BULB_TARIFF[account_id]['unit_rate']) / 100
     monthly_standing_charge = (billing_calendar.days_in_current_month
                                * tariff.BULB_TARIFF[account_id]['standing_charge']) / 100
@@ -33,9 +33,10 @@ def get_bill_by_account(account_id, billing_calendar, data):
 
 
 def get_reading(readings, first_day, last_day):
-    current = list(filter(lambda x: first_day <= dt.strptime(x['readingDate'], dtu.ISO_DATETIME_FORMAT) <= last_day,
-                          readings))[0]
-    return current
+    reading = list(filter(lambda x: first_day <= dt.strptime(x['readingDate'], dtu.ISO_DATETIME_FORMAT) <= last_day,
+                          readings))
+
+    return {'cumulative': 0} if len(reading) == 0 else reading[0]
 
 
 def get_readings_by_account(billing_calendar, data):
