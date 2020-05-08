@@ -7,6 +7,12 @@ YMD_DATE_TIME_FORMAT = "%Y-%m-%d"
 
 
 def get_billing_calendar(billing_date):
+
+    """
+    Generates a billing calendar based on the billing date.
+    The generation assumes that the billing date is always the last day of the month and the billing period
+    goes from the first day to the last day of the month
+    """
     current_month_last_day = dt.strptime(billing_date, YMD_DATE_TIME_FORMAT)
     current_month_first_day = dt(year=current_month_last_day.year, month=current_month_last_day.month, day=1)
     prev_months_last_day = current_month_first_day - td(days=1)

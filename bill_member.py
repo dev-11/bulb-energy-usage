@@ -1,6 +1,5 @@
 from load_readings import get_readings
 from datetime import datetime as dt
-from account_factory import get_accounts
 import datetime_utils as dtu
 import tariff
 
@@ -11,24 +10,37 @@ def calculate_bill(member_id=None, account_id=None, bill_date=None):
     data = get_readings()
     bills = []
 
-    for account in get_accounts(account_id):
-        if account in data[member_id][0]['account-abc'][0]:
-            sub_reading = data[member_id][0]['account-abc'][0][account]
-            bill = get_bill_by_account(account, billing_calendar, sub_reading)
+    readings = list(get_readings_by_account_id(account_id, data[member_id]))
+
+    for reading in readings:
+        for energy_type in reading:
+            bill = get_bill_by_account(energy_type, billing_calendar, reading[energy_type])
             bills.append(bill)
 
-    return bills[0]
+    return 0, 0 if len(bills) >= 0 else [sum(x) for x in zip(*bills)]
 
 
-def get_bill_by_account(account_id, billing_calendar, data):
-    if data is None:
-        return 0, 0
+def get_readings_by_account_id(account_id, readings):
+    if account_id == 'ALL':
+        for account_list in readings:
+            for account in account_list:
+                for energy_types in account_list[account]:
+                    yield energy_types
+
+    for account_list in readings:
+        for account in account_list:
+            if account_id == account:
+                for energy_types in account_list[account]:
+                    yield energy_types
+
+
+def get_bill_by_account(energy_type, billing_calendar, data):
 
     previous, current = get_readings_by_account(billing_calendar, data)
     consumption = current['cumulative'] - previous['cumulative']
-    consumption_cost = (consumption * tariff.BULB_TARIFF[account_id]['unit_rate']) / 100
+    consumption_cost = (consumption * tariff.BULB_TARIFF[energy_type]['unit_rate']) / 100
     monthly_standing_charge = (billing_calendar.days_in_current_month
-                               * tariff.BULB_TARIFF[account_id]['standing_charge']) / 100
+                               * tariff.BULB_TARIFF[energy_type]['standing_charge']) / 100
     return round(consumption_cost + monthly_standing_charge, 2), consumption
 
 
