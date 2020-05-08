@@ -17,7 +17,7 @@ def calculate_bill(member_id=None, account_id=None, bill_date=None):
             bill = get_bill_by_account(energy_type, billing_calendar, reading[energy_type])
             bills.append(bill)
 
-    return 0, 0 if len(bills) >= 0 else [sum(x) for x in zip(*bills)]
+    return (0, 0) if len(bills) == 0 else [sum(x) for x in zip(*bills)]
 
 
 def get_readings_by_account_id(account_id, readings):
