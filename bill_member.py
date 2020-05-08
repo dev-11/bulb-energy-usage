@@ -1,12 +1,12 @@
 from load_readings import get_readings
 from datetime import datetime as dt
-import datetime_utils as dtu
+import billing_calendar as bc
 import tariff
 
 
 def calculate_bill(member_id=None, account_id=None, bill_date=None):
 
-    billing_calendar = dtu.get_billing_calendar(bill_date)
+    billing_calendar = bc.get_billing_calendar(bill_date)
     data = get_readings()
     bills = []
 
@@ -45,7 +45,7 @@ def get_bill_by_energy_type(energy_type, billing_calendar, data):
 
 
 def get_reading_in_range(readings, first_day, last_day):
-    reading = list(filter(lambda x: first_day <= dt.strptime(x['readingDate'], dtu.ISO_DATETIME_FORMAT) <= last_day,
+    reading = list(filter(lambda x: first_day <= dt.strptime(x['readingDate'], bc.ISO_DATETIME_FORMAT) <= last_day,
                           readings))
 
     return {'cumulative': 0} if len(reading) == 0 else reading[0]
