@@ -14,7 +14,7 @@ def calculate_bill(member_id=None, account_id=None, bill_date=None):
 
     for reading in readings:
         for energy_type in reading:
-            bill = get_bill_by_account(energy_type, billing_calendar, reading[energy_type])
+            bill = get_bill_by_energy_type(energy_type, billing_calendar, reading[energy_type])
             bills.append(bill)
 
     return (0, 0) if len(bills) == 0 else [sum(x) for x in zip(*bills)]
@@ -34,9 +34,9 @@ def get_readings_by_account_id(account_id, readings):
                     yield energy_types
 
 
-def get_bill_by_account(energy_type, billing_calendar, data):
+def get_bill_by_energy_type(energy_type, billing_calendar, data):
 
-    previous, current = get_readings_by_account(billing_calendar, data)
+    previous, current = get_monthly_readings(billing_calendar, data)
     consumption = current['cumulative'] - previous['cumulative']
     consumption_cost = (consumption * tariff.BULB_TARIFF[energy_type]['unit_rate']) / 100
     monthly_standing_charge = (billing_calendar.days_in_current_month
@@ -44,17 +44,17 @@ def get_bill_by_account(energy_type, billing_calendar, data):
     return round(consumption_cost + monthly_standing_charge, 2), consumption
 
 
-def get_reading(readings, first_day, last_day):
+def get_reading_in_range(readings, first_day, last_day):
     reading = list(filter(lambda x: first_day <= dt.strptime(x['readingDate'], dtu.ISO_DATETIME_FORMAT) <= last_day,
                           readings))
 
     return {'cumulative': 0} if len(reading) == 0 else reading[0]
 
 
-def get_readings_by_account(billing_calendar, data):
+def get_monthly_readings(billing_calendar, data):
 
-    current = get_reading(data, billing_calendar.current_month_first_day, billing_calendar.current_month_last_day)
-    previous = get_reading(data, billing_calendar.previous_month_first_day, billing_calendar.previous_month_last_day)
+    current = get_reading_in_range(data, billing_calendar.current_month_first_day, billing_calendar.current_month_last_day)
+    previous = get_reading_in_range(data, billing_calendar.previous_month_first_day, billing_calendar.previous_month_last_day)
 
     return previous, current
 
