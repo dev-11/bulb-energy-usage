@@ -1,7 +1,12 @@
 import unittest
 from datetime import datetime as dt
-from bill_member import calculate_bill, get_reading_in_range, get_monthly_readings
 from billing_calendar import BillingCalendar
+from parameterized import parameterized
+from bill_member import calculate_bill, \
+    get_reading_in_range, \
+    get_monthly_readings, \
+    get_bill_by_energy_type, \
+    get_readings_by_account_id
 
 
 class TestBillMember(unittest.TestCase):
@@ -98,19 +103,56 @@ class TestBillMember(unittest.TestCase):
         self.assertEqual({"cumulative": 0}, prev)
         self.assertEqual(test_readings[0], current)
 
+    @parameterized.expand([
+        ['electricity', 'electricity', (28.76, 179)],
+        ['gas', 'gas', (14.17, 179)],
+    ])
+    def test_get_bill_by_energy_type(self, name, energy_type, expected_bill):
+        billing_calendar = BillingCalendar(dt(2017, 3, 1), dt(2017, 3, 31), dt(2017, 4, 1), dt(2017, 4, 30), 30)
+        data = test_readings
+        bill = get_bill_by_energy_type(energy_type, billing_calendar, data)
+        self.assertEqual(expected_bill, bill)
+
+    def test_get_readings_by_account_id_ALL(self):
+        test_account_readings = account_readings
+        readings = get_readings_by_account_id('ALL', test_account_readings)
+        list_of_readings = list(readings)
+        self.assertListEqual([{"electricity": test_readings}], list_of_readings)
+
+    @parameterized.expand([
+        ['empty_string', ''],
+        ['None', None],
+        ['invalid_account_od', 'asdfsdfasdf']
+    ])
+    def test_get_readings_by_account_id(self, name, account_id):
+        test_account_readings = account_readings
+        readings = get_readings_by_account_id(account_id, test_account_readings)
+        list_of_readings = list(readings)
+        self.assertListEqual([], list_of_readings)
+
 
 test_readings = [{
     "cumulative": 17580,
     "readingDate": "2017-03-28T00:00:00.000Z",
     "unit": "kWh"
+},
+    {
+        "cumulative": 17759,
+        "readingDate": "2017-04-15T00:00:00.000Z",
+        "unit": "kWh"
     },
     {
-    "cumulative": 17759,
-    "readingDate": "2017-04-15T00:00:00.000Z",
-    "unit": "kWh"
-    },
+        "cumulative": 18002,
+        "readingDate": "2017-05-08T00:00:00.000Z",
+        "unit": "kWh"
+    }]
+
+account_readings = [
     {
-    "cumulative": 18002,
-    "readingDate": "2017-05-08T00:00:00.000Z",
-    "unit": "kWh"
-}]
+        "account-abc": [
+            {
+                "electricity": test_readings
+            }
+        ]
+    }
+]
