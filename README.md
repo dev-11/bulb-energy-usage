@@ -15,7 +15,6 @@ These are the bits what I've identified.
 4.  We need to be able to select readings based on the given billing month.
 5.  We need to identify each reading by its energy type to calculate the correct tariff.
 
-
 ### bill_member.py
 
 #### calculate_bill
