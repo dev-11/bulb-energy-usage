@@ -76,7 +76,7 @@ class TestBillMember(unittest.TestCase):
 
     def test_get_reading_in_range_returns_correct_value(self):
         readings = test_readings
-        reading_of_range = get_reading_in_range(readings, dt(year=2017, month=4, day=1), dt(year=2017, month=4, day=30))
+        reading_of_range = get_reading_in_range(dt(year=2017, month=4, day=1), dt(year=2017, month=4, day=30), readings)
         self.assertEqual(
             {
                 "cumulative": 17759,
@@ -86,7 +86,7 @@ class TestBillMember(unittest.TestCase):
 
     def test_get_reading_in_range_returns_empty_value(self):
         readings = test_readings
-        reading_of_range = get_reading_in_range(readings, dt(year=2016, month=4, day=1), dt(year=2016, month=4, day=30))
+        reading_of_range = get_reading_in_range(dt(year=2016, month=4, day=1), dt(year=2016, month=4, day=30), readings)
         self.assertEqual({"cumulative": 0}, reading_of_range)
 
     def test_get_monthly_readings_returns_correct_prev_and_current_readings(self):

@@ -55,7 +55,7 @@ def get_bill_by_energy_type(energy_type, billing_calendar, data):
     return round(consumption_cost + monthly_standing_charge, 2), consumption
 
 
-def get_reading_in_range(readings, first_day, last_day):
+def get_reading_in_range(first_day, last_day, readings):
 
     """
     returns the reading values of the given time range or an empty reading if there is no reading in the time range
@@ -71,8 +71,8 @@ def get_monthly_readings(billing_calendar, data):
     """
     returns the (previous, current) tuple from data given list based en the billing calendar
     """
-    current = get_reading_in_range(data, billing_calendar.current_month_first_day, billing_calendar.current_month_last_day)
-    previous = get_reading_in_range(data, billing_calendar.previous_month_first_day, billing_calendar.previous_month_last_day)
+    current = get_reading_in_range(billing_calendar.current_month_first_day, billing_calendar.current_month_last_day, data)
+    previous = get_reading_in_range(billing_calendar.previous_month_first_day, billing_calendar.previous_month_last_day, data)
 
     return previous, current
 
