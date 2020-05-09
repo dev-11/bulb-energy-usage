@@ -48,8 +48,6 @@ This method returns a `BillingCalendar` tuple which will contain all the five ca
 
 ### Improvements
 
--  Right now the calculation doesn't detail the bill. It would be good to see a bill breakdown by energy type or make it possible to calculate only gas or electricity bill.
--  The incoming data from the json is also a little bit strange. It makes it possible to have duplicate account ids and duplicate energy types, which raises a few questions.
--  The path of the json file is baked into the code. 
- 
-
+-   Right now the calculation doesn't detail the bill. It would be good to see a bill breakdown by energy type or make it possible to calculate only gas or electricity bill.
+-   The incoming data from the json is also a little bit strange. It makes it possible to have duplicate account ids and duplicate energy types, which raises a few questions.
+-   The path of the json file is baked into the code. 
