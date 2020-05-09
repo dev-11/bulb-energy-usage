@@ -27,7 +27,7 @@ This the provided method which server some sort of controller functionality to c
 
 This method uses the whole reading list of the member and will return simple list of the readings with the energy type of the readings. It doesn't change the data structure, just narrows down the reading set to the relevant readings. 
 
-### get_bill_by_energy_type
+### get_bill_by_energy_type
 
 Because the energy type determines the tariff and the final bill, I've introduced this method to calculate a sub-bill. Like an account with electricity and gas readings can have two sub bills. One for the electricity and one for the gas.
 
@@ -43,7 +43,7 @@ This method receives the billing date and based on that it will return the readi
 
 This brand new file holds every logic to handle the calendar related functionality. To calculate a bill we need to know the previous month (to get its reading), the current month (to get the current reading), and the number of days in the current month to calculate the standing charge for the month. 
 
-### get_billing_calendar
+### get_billing_calendar
 
 This method returns a `BillingCalendar` tuple which will contain all the five calendar related information to calculate the bill. 
 
